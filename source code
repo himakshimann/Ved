@@ -1,0 +1,58 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+api_key = os.getenv("ELEVENLABS_API_KEY")
+agent_id = "agent_3201k5k95r52enrtd6vemmdjdjzh"
+
+# necessary modules
+from elevenlabs.client import ElevenLabs
+from elevenlabs.conversational_ai.conversation import Conversation
+from elevenlabs.conversational_ai.default_audio_interface import DefaultAudioInterface
+from elevenlabs.types import ConversationConfig
+
+# OPTIONAL: You can send some user metadata
+user_id = "himakshi_001"
+
+# conversation configuration
+config = ConversationConfig(
+    user_id=user_id,
+    extra_body={},
+    conversation_config_override={},
+    dynamic_variables={}
+)
+
+
+
+# Initializing ElevenLabs client
+client = ElevenLabs(api_key=api_key)
+
+#  Callback functions
+def print_agent_response(response):
+    print(f"Agent: {response}")
+
+def print_interrupted_response(original, corrected):
+    print(f"Agent interrupted: {corrected}")
+
+def print_user_transcript(transcript):
+    print(f"User: {transcript}")
+
+# conversation object
+conversation = Conversation(
+    client=client,
+    agent_id=agent_id,
+    config=config,
+    requires_auth=False,
+    audio_interface=DefaultAudioInterface(),
+    callback_agent_response=print_agent_response,
+    callback_agent_response_correction=print_interrupted_response,
+    callback_user_transcript=print_user_transcript,
+)
+
+# Start voice session
+conversation.start_session()
+
+
+
+
